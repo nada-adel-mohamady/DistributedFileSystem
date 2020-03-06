@@ -21,6 +21,6 @@ def upload(server, port, FileName):
     socket.connect("tcp://%s:%s"%(server, port))
     socket.send()
     datakeeper_port = socket.recv()
-    datakeeper_port.send_string()
+    datakeeper_port.send_string(FileName)
     
     

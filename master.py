@@ -10,4 +10,5 @@ def upload():
     #pick port randomly , assume here the port we will send is port
     msg = socket.recv()
     socket.send(port)
+    filename = socket.recv_string()
     
