@@ -8,7 +8,7 @@ import os
 
 #Initializing Variables.
 MasterPort = '5555'
-MasterIP = 'localhost'
+MasterIP = '127.0.0.1'
 FileName = ''
 context = zmq.Context()
 
@@ -82,17 +82,23 @@ def upload(MasterIP, MasterPort, FileName):
     print("client has sent upload msg to the master..")
     # HERE CLIENT WILL RECIEVE A MSG CONTAIN IP AND PORT OF DataKeeper
     recvMasterMsg = socket.recv_pyobj()
-    if recvMasterMsg["check"]:
-        DKip = recvMasterMsg["ip"]
-        DKport = recvMasterMsg["port"]
+    socket.close()
+    # just to debug 
+    print(recvMasterMsg)
+    #
+    DKip = recvMasterMsg["ip"]
+    #just to debug 
+    print(DKip)
+    DKport = recvMasterMsg["port"]
+    print(DKport)
     print("client has recieved  ip and port of DK from the master")
     #after that client will communicate with the datakeeper port and send the mp4 file to it 
     DataNodeSocket = context.socket(zmq.REQ)
     print(DKport)
     DataNodeSocket.connect("tcp://%s:%s"%(DKip, DKport))
-    
-  #  DataNodeSocket.send_string(FileName)
-    # the following code is to transfere a file 
+
+   #  DataNodeSocket.send_string(FileName)
+   # the following code is to transfere a file 
     target = open(FileName, 'rb')
     data = target.read()
   #  target.close()
@@ -104,7 +110,7 @@ def upload(MasterIP, MasterPort, FileName):
 
     
 # just to test it     
-upload("127.0.0.1", 5555, "video.mp4")
+upload("127.0.0.1", 5551, "video.mp4")
 
     
     

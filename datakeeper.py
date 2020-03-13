@@ -1,9 +1,9 @@
 import zmq 
 import sys
 MasterIP = "127.0.0.1"
-MasterPort = "5555"
+MasterPort = "5551"
 DKip = "127.0.0.1"
-DKport = "4001"
+DKport = "5525"
 
 def upload(DKip, DKport):
     context = zmq.Context()
@@ -20,11 +20,15 @@ def upload(DKip, DKport):
     f.close()
     # finish the transfering of file 
     # here datakeeper must notify the master -- call a function which notify the master --later
-    MasterSocket = context.socket(zmq.REQ)
-    MasterSocket.connect("tcp://%s:%s"%(IP, Port))
-    #DK MUST SEND A MESSAGE TO CONFORM DONE OF OPERATION 
-    msg = {"Type":"Up","IP":DKip, "port":DKport}
-    MasterSocket.send_pyobj(msg)
-
+    
+    #----------------------------------
+    #--------just to debug 
+    #------remove the comments later----
+#    MasterSocket = context.socket(zmq.REQ)
+#    MasterSocket.connect("tcp://%s:%s"%(MasterIP, MasterPort))
+#    #DK MUST SEND A MESSAGE TO CONFORM DONE OF OPERATION 
+#    msg = {"Type":"Up","IP":DKip, "port":DKport}
+#    MasterSocket.send_pyobj(msg)
+#    MasterSocket.close()
 # teesssst    
-upload("127.0.0.1", 4001)
+upload("127.0.0.1", 5525)
