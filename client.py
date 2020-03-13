@@ -69,41 +69,42 @@ def MakeConnectionWithDataNodes():
 
 
 
-def upload(IP, port, FileName):
+def upload(MasterIP, MasterPort, FileName):
     #here client communicate with the master 
     context = zmq.Context()
     socket = context.socket(zmq.REQ)
-    socket.connect("tcp://%s:%s"%(IP, port))
+    socket.connect("tcp://%s:%s"%(MasterIP, MasterPort))
     print("client connecting to server....")
-    #send a string to indicate that the client want to upload a file 
-    socket.send_string("upload") 
+
+   # format of msg sent to a master to request uploading file 
+    msg = {"opp":"Upload", "file_name":FileName}
+    socket.send_pyobj(msg)
     print("client has sent upload msg to the master..")
-    #master will send back the port of one of the datakeeper 
-    datakeeper_port = socket.recv_string()
-    print("client has recieved a port number from the master")
+    # HERE CLIENT WILL RECIEVE A MSG CONTAIN IP AND PORT OF DataKeeper
+    recvMasterMsg = socket.recv_pyobj()
+    if recvMasterMsg["check"]:
+        DKip = recvMasterMsg["ip"]
+        DKport = recvMasterMsg["port"]
+    print("client has recieved  ip and port of DK from the master")
     #after that client will communicate with the datakeeper port and send the mp4 file to it 
     DataNodeSocket = context.socket(zmq.REQ)
-    print(datakeeper_port)
-    DataNodeSocket.connect("tcp://%s:%s"%(IP, datakeeper_port))
+    print(DKport)
+    DataNodeSocket.connect("tcp://%s:%s"%(DKip, DKport))
+    
   #  DataNodeSocket.send_string(FileName)
     # the following code is to transfere a file 
     target = open(FileName, 'rb')
     data = target.read()
   #  target.close()
     DataNodeSocket.send(data)
+    DataNodeSocket.close()
+    print("client has sent video to the datakeeper")
+
+    #---finish transfere ---------------
 
     
-#    #---finish transfere ---------------
-#    DataNodeSocket.recv()
-#     # client will recieve a notification from the master which indicate the transfer was success
-#    respond = socket.recv()
-#    if respond =="ok":
-#        print("the file uploaded successfully...")
-#    else:
-#        print("error occured... transfer failed")
-    
 # just to test it     
-#upload("127.0.0.1", 5553, "video.mp4")
+upload("127.0.0.1", 5555, "video.mp4")
 
     
     
