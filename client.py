@@ -1,11 +1,4 @@
 #!/usr/bin/env python3
-# -*- coding: utf-8 -*-
-"""
-Created on Sun Mar 15 22:06:43 2020
-
-@author: nada
-"""
-
 
 # -*- coding: utf-8 -*-
 """
@@ -14,11 +7,10 @@ Created on Fri Mar 13 14:59:01 2020
 @author: bia3
 """
 import zmq
-#import time
 import multiprocessing
 from  multiprocessing import Process
 from  multiprocessing import Manager
-#client_num=2
+
 
 
 output = "fuck"
@@ -38,7 +30,7 @@ def sendRequestToMaster(portM,operation,FileName):
         if recvMasterMsg["check"] or True:
             DKip = recvMasterMsg["ip"]
             DKport = recvMasterMsg["port"]
-#            connectWithDataKeeper(DKport,DKip,FileName,operation)
+
         else:
             print("something wrong happend please try again later")
     else:
@@ -52,7 +44,7 @@ def sendRequestToMaster(portM,operation,FileName):
             print ("Received reply ", 1, "[", recvMasterMsg, "]")
             DKip = recvMasterMsg["ip"]
             DKport = recvMasterMsg["port"]
-#            connectWithDataKeeper(DKport,DKip,FileName,operation)
+
         else:
             print("something wrong happend please try again later")
     return recvMasterMsg['check'],DKip,DKport
@@ -76,7 +68,6 @@ def connectWithDataKeeper(port,ip,fileName,operation):
         f.close()
         print("client has sent video to the datakeeper")
     else:
-        #  DataNodeSocket.send_string(FileName)
         # the following code is to transfere a file 
         target = open(fileName, 'rb')
         data = target.read()
@@ -97,16 +88,14 @@ def checkMaster(portM,return_dict):
 
 if __name__ == "__main__":
     # Now we can run a few servers 
-#    server_ports = range(5550,5556,2)
-#    for server_port in server_ports:
-#        Process(target=server, args=(server_port,)).start()
+
         
     # Now we can connect a client to all these servers
     manager = Manager()
     return_dict = manager.dict()
     
     portM="5559"
-    operation="download"
+    operation="upload "
     fileName="video.mp4"
     check,DKip,DKport=sendRequestToMaster(portM,operation,fileName)
     print(check,DKip,DKport)
@@ -118,21 +107,7 @@ if __name__ == "__main__":
     
     p2.join()
     if return_dict[0]=="True":        
-        print(return_dict[0]+"dee if")
         p1.join()
     else:
-        print("dee else")
         p1.terminate()
-    print("We're fucking done")
-#    print(return_dict.values())
-#    if check:
-#        MasterSocket.send_string("begin transfer")
-#        print("d5lt")
-#        one = Process(target=connectWithDataKeeper,args=(DKport,DKip,fileName,operation)).start()  
-#        out = Process(target=checkMaster,args=(return_dict)).start()
-#        out.start()
-#        one.start()
-#        one.join()
-#        print("7saaaaaaaaaaaaaaaal")
-#    print(return_dict.values())
-#    Process(target=client, args=(server_ports,)).start()
+

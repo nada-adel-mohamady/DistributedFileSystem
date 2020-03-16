@@ -150,15 +150,12 @@ def MasterTracker(Table_Ip, Table_files, Lock_Ip_table, Lock_file_table, port):
     context = zmq.Context()
     server = context.socket(zmq.REP)
     server.bind("tcp://%s:%s"%("127.0.0.1", port))
-    print("after bind")
     while True:
         result = server.recv_pyobj()  #receive request from clinet to uplad or to download  Dict {opp : Download or Upload}
         #just to debug 
         print(result)
-        print("hereeeeeeeeeeee")
         Send_message = {}
         if 'opp' in result:
-            print("gowaa if opp")
             operation = result["opp"]
             if operation == "Upload":  # START UPLOAD PROCESS
                 print("here in upload if block")
@@ -179,21 +176,15 @@ def MasterTracker(Table_Ip, Table_files, Lock_Ip_table, Lock_file_table, port):
                     break
 
                 Send_message["check"] = check_IF_Found
-                #----------take care --------------------
-                # JUST TO DEBUG REMOVE THE COMMENT LATTER 
-                #----------------------------------------
-               # if check_IF_Found:
-                    #just to test 
-                
-                sendip = "127.0.0.1"
-                senddport = "5525"
-                Send_message["ip"] = sendip
-                Send_message["port"] = senddport
-                #call upload function ----HERE ----
-                upload(server,"new.mp4",Table_files,senddport,sendip)
-                Lock_Ip_table.release()
-               
-                print("Uploading Done")
+              
+                if check_IF_Found:   
+                    Send_message["ip"] = sendip
+                    Send_message["port"] = senddport
+                    #call upload function ----HERE ----
+                    upload(server,result["file_name"],Table_files,senddport,sendip)
+                    Lock_Ip_table.release()
+                   
+                    print("Uploading Done")
             
 
             elif operation == "Download":
@@ -202,7 +193,8 @@ def MasterTracker(Table_Ip, Table_files, Lock_Ip_table, Lock_file_table, port):
                 IPs_that_has_file = []
                 Lock_file_table.acquire()
                 try:
-                    IPs_that_has_file = Table_files[result["file_name"]]   # here i get the ips that has this file name
+                    print(result["file_name"])
+                    IPs_that_has_file.append( Table_files[result["file_name"]] )  # here i get the ips that has this file name
                 except KeyError:
                     print("File not found !")        # if wrong file name file name not in table
                     Send_message["check"] = False
@@ -210,9 +202,8 @@ def MasterTracker(Table_Ip, Table_files, Lock_Ip_table, Lock_file_table, port):
                 else:
                     Lock_Ip_table.acquire()
                     check_IF_Found=False
-
-                    for ip in IPs_that_has_file:
-                        ip = "127.0.0.1"
+                    print("el bta3 aho ",IPs_that_has_file)
+                    for ip in IPs_that_has_file:                     
                         print("the ip is = ",ip)
                         ports = Table_Ip[ip]    # get the ports of each IP
                         if ports[1] > 0:        #No of free ports > 0(there is afree port)
@@ -297,17 +288,14 @@ if __name__== "__main__":
 
 #JUST FOR DEBUG ------------
     ID_List=[]
- #   for i in range (number_of_tracker_processes):
-    ID = multiprocessing.Process(target= MasterTracker ,args=(Table_Ip, Table_files, Lock_Ip_table, Lock_file_table, "5559") )
-    ID_List.append(ID)
-    ID.start()
+    for i in range (number_of_tracker_processes):
+        ID = multiprocessing.Process(target= MasterTracker ,args=(Table_Ip, Table_files, Lock_Ip_table, Lock_file_table, "5559") )
+        ID_List.append(ID)
+        ID.start()
    # multiprocessing.Process(target=Check_If_Alive, args=(Table_Ip, Lock_Ip_table)).start()
     multiprocessing.Process(target=Operation_confirmation, args=(Table_Ip, Table_files, Lock_Ip_table, Lock_file_table, file_tracker_port_address)).start()
 
-#JUST FOR DEBUG -----
-#REMOVE THE COMMENT LATER 
-    # for i in range (number_of_tracker_processes):
-    #     ID_List[i].join()
-    # jsut to test -----
-    
-   # MasterTracker(Table_Ip, Table_files, Lock_Ip_table, Lock_file_table, "5551")
+
+    for i in range (number_of_tracker_processes):
+        ID_List[i].join()
+ 

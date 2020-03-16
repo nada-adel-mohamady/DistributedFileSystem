@@ -22,26 +22,26 @@ mp4File='video.mp4'
 # socketNotification=context.socket(zmq.PAIR)
 # socket.bind("tcp://127.0.0.1:%s" % port)
 # socketNotification.bind("tcp://127.0.0.1:%s" % portNotifications)
-#----------------------------------------------------------------
-#----------------------------------------------------------------
-#----------------------------------------------------------------
+# # ----------------------------------------------------------------
+# # ----------------------------------------------------------------
+# # ----------------------------------------------------------------
 # while True:
 #     socket.send_pyobj({'ip':ip})
 #     time.sleep(1)
 #     msg=socketNotification.recv_pyobj()
 #     if "ip_toCopyTo" in msg:
-#        ip_toCopyTo=msg["ip_toCopyTo"]
-#        port_toCopyTo=msg["port"]
-#        socketFiles.bind("tcp://127.0.0.1:%s"% port_toCopyTo)
-#        socketFiles.send_pyobj({'file':mp4File})
+#         ip_toCopyTo=msg["ip_toCopyTo"]
+#         port_toCopyTo=msg["port"]
+#         socketFiles.bind("tcp://127.0.0.1:%s"% port_toCopyTo)
+#         socketFiles.send_pyobj({'file':mp4File})
 
 #     if"ip_toReceiveFrom" in msg:
-#        ip_toRecFrom=msg["ip_toReceiveFrom"]
-#        port_toRecFRom=msg["port"]
-#        socketFiles.connect("tcp://"+  str(ip_toRecFrom) 
-#        +":"+str(port_toRecFRom))
-#        received=socketFiles.recv_pyobj()
-#        mp4file=received['file']
+#         ip_toRecFrom=msg["ip_toReceiveFrom"]
+#         port_toRecFRom=msg["port"]
+#         socketFiles.connect("tcp://"+  str(ip_toRecFrom) 
+#         +":"+str(port_toRecFRom))
+#         received=socketFiles.recv_pyobj()
+#         mp4file=received['file']
     
     
 
@@ -61,7 +61,6 @@ def upload(DKip, DKport):
     # recieve the mp4 file
     data = socket.recv()
     socket.close()
- #   socket.send("")
     print("datanode has recieved")
     f = open('new.mp4','wb') # open the file
     f.write(data)
@@ -116,5 +115,5 @@ def download(DKip,DKport):
     # socket2.send_pyobj(mess)
 # teesssst   
     
-
-download("127.0.0.1", 5525)
+if __name__== "__main__":
+    upload("127.0.0.1", 5525)
