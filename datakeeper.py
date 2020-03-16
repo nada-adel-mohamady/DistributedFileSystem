@@ -92,14 +92,7 @@ def download(DKip,DKport):
     socket = context.socket(zmq.REP)
     socket.bind("tcp://%s:%s" % (DKip,DKport))
     print("after binding...")
-    # --------------JUST FOR TEST --------------#
-    #----------------REMOVE THE COMMENT LATER----#
-    
-    
-    # context2 = zmq.Context()
-    # socket2 = context2.socket(zmq.REQ)
-    # socket2.connect("tcp://%s:%s" % (MasterIP,MasterPort))
-
+ 
     message = socket.recv_string();
     print ("Received request: ", message)
     video = message
@@ -111,10 +104,12 @@ def download(DKip,DKport):
     
      # --------------JUST FOR TEST --------------#
     #----------------REMOVE THE COMMENT LATER----#
-    
-    
-    # socket2.send_pyobj(mess)
+       
+    context2 = zmq.Context()
+    socket2 = context2.socket(zmq.REQ)
+    socket2.connect("tcp://%s:%s" % (MasterIP,MasterPort))
+    socket2.send_pyobj(mess)
 # teesssst   
     
 if __name__== "__main__":
-    upload("127.0.0.1", 5525)
+    download("127.0.0.1", 5525)

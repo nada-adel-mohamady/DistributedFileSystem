@@ -243,7 +243,8 @@ def MasterTracker(Table_Ip, Table_files, Lock_Ip_table, Lock_file_table, port):
         
         if operation =="Upload":
             upload(result["file_name"],Table_files,senddport,sendip)
-
+        elif operation == "Download":
+            response_datakeeper()
         server.close()
 
 #--------------------------------------------------------------------#
@@ -257,16 +258,17 @@ def upload(filename, Table_files, DataKeeperPort, IP):
     # master should recive notification from the datakeeper 
     #----------------------------------
     # WE MUST RECIEV THE RESPOSE 
-    #-----JUST REMOVE IT FROM THE DEBUG 
-    #-----------------------------------
+    response_datakeeper()
+    
+
+
+def response_datakeeper():
     context = zmq.Context()
     server = context.socket(zmq.REP)
     server.bind("tcp://%s:%s"%("127.0.0.1", "5557"))
 
     response = server.recv_pyobj()
     print("the final response is ",response)
-#DataNodeSocket.close()
-        
 #-------------------------------------------------------------------#
 #---------------------UPDATE LOOK UP TABLE TO INSERT NEW FILE ------#
 #-------------------------------------------------------------------#
