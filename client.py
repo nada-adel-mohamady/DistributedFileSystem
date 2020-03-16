@@ -95,7 +95,7 @@ if __name__ == "__main__":
     return_dict = manager.dict()
     
     portM="5559"
-    operation="upload "
+    operation="upload"
     fileName="video.mp4"
     check,DKip,DKport=sendRequestToMaster(portM,operation,fileName)
     print(check,DKip,DKport)

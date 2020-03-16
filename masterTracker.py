@@ -180,8 +180,8 @@ def MasterTracker(Table_Ip, Table_files, Lock_Ip_table, Lock_file_table, port):
                 if check_IF_Found:   
                     Send_message["ip"] = sendip
                     Send_message["port"] = senddport
-                    #call upload function ----HERE ----
-                    upload(server,result["file_name"],Table_files,senddport,sendip)
+                
+             
                     Lock_Ip_table.release()
                    
                     print("Uploading Done")
@@ -233,19 +233,23 @@ def MasterTracker(Table_Ip, Table_files, Lock_Ip_table, Lock_file_table, port):
         else:
             Send_message["check"] = False           # no opperation sent
        
-        print("ayawaaaaa",Send_message)
+
         Send_message["port"] = "5525"
         Send_message["ip"]  = "127.0.0.1"
         server.send_pyobj(Send_message)             # sent the message to the client
         recv2 = server.recv_string()
         print(recv2)
         server.send_string("done")
+        
+        if operation =="Upload":
+            upload(result["file_name"],Table_files,senddport,sendip)
+
         server.close()
 
 #--------------------------------------------------------------------#
 # -----------------------UPLOAD FILE --------------------------------#
 #--------------------------------------------------------------------#
-def upload(server,filename, Table_files, DataKeeperPort, IP):
+def upload(filename, Table_files, DataKeeperPort, IP):
     print("here in upload function")
     print("datakeeper port is ",DataKeeperPort)
     #here master should update the look up table and add the filename to look up table 
@@ -255,8 +259,12 @@ def upload(server,filename, Table_files, DataKeeperPort, IP):
     # WE MUST RECIEV THE RESPOSE 
     #-----JUST REMOVE IT FROM THE DEBUG 
     #-----------------------------------
-  #  response = server.recv_pyobj()
-   # print(response)
+    context = zmq.Context()
+    server = context.socket(zmq.REP)
+    server.bind("tcp://%s:%s"%("127.0.0.1", "5557"))
+
+    response = server.recv_pyobj()
+    print("the final response is ",response)
 #DataNodeSocket.close()
         
 #-------------------------------------------------------------------#

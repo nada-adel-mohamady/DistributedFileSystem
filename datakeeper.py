@@ -71,12 +71,13 @@ def upload(DKip, DKport):
     #----------------------------------
     #--------just to debug 
     #------remove the comments later----
-#    MasterSocket = context.socket(zmq.REQ)
-#    MasterSocket.connect("tcp://%s:%s"%(MasterIP, MasterPort))
-#    #DK MUST SEND A MESSAGE TO CONFORM DONE OF OPERATION 
-#    msg = {"Type":"Up","IP":DKip, "port":DKport}
-#    MasterSocket.send_pyobj(msg)
-#    MasterSocket.close()
+    MasterSocket = context.socket(zmq.REQ)
+    MasterSocket.connect("tcp://%s:%s"%(MasterIP, MasterPort))
+    print("after connect")
+    #DK MUST SEND A MESSAGE TO CONFORM DONE OF OPERATION 
+    msg = {"Type":"Up","IP":DKip, "port":DKport}
+    MasterSocket.send_pyobj(msg)
+    MasterSocket.close()
     
     
 #--------------------------------------------
